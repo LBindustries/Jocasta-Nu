@@ -14,7 +14,8 @@ public class MainPanel extends AutoPanel implements ActionListener {
     JMenu menu;
     JMenuBar mb;
     JMenuItem crea, apri, about;
-    public MainPanel(JFrame frame){
+
+    public MainPanel(JFrame frame) {
         super("Pannello Principale");
         crea = new JMenuItem("Crea archivio");
         crea.addActionListener(this);
@@ -33,29 +34,28 @@ public class MainPanel extends AutoPanel implements ActionListener {
         frame.setVisible(true);
     }
 
+    private String chooserGetFile(FileInputOptions options, String title, boolean only_folders) {
+        CustomChooser cc1 = new CustomChooser(options, title, only_folders);
+        int returnvalue = cc1.showOpenDialog(null);
+        if (returnvalue != JFileChooser.APPROVE_OPTION) {
+            return "error";
+        }
+        return cc1.getSelectedFile().getAbsolutePath();
+    }
+
+    private void createArchive() {
+        FileInputOptions opzioni = new FileInputOptions("Opzioni");
+        JobDescriptor j = new JobDescriptor(opzioni, chooserGetFile(opzioni, "Seleziona un file", false), chooserGetFile(opzioni, "Seleziona la cartella di destinazione", true));
+        if (j.getFlag()) {
+            this.summonErrorPopup("La stringa inserita non è un numero.\nL'operazione è stata annullata.");
+        }
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == crea){
-            FileInputOptions opzioni = new FileInputOptions("Opzioni");
-            CustomChooser cc1 = new CustomChooser(opzioni, "Seleziona un file su cui lavorare" ,false);
-            int returnvalue = cc1.showOpenDialog(null);
-            if(returnvalue != JFileChooser.APPROVE_OPTION){
-                return;
-            }
-            CustomChooser cc2 = new CustomChooser(null,"Seleziona una cartella di destinazione" ,true);
-            returnvalue = cc2.showOpenDialog(null);
-            if(returnvalue != JFileChooser.APPROVE_OPTION){
-                return;
-            }
-            String inputPath = cc1.getSelectedFile().getAbsolutePath();
-            String outputPath = cc2.getSelectedFile().getAbsolutePath();
-            JobDescriptor j = new JobDescriptor(opzioni, inputPath, outputPath);
-            if(!j.getFlag()){
-                System.out.println(j);
-            }
-            else{
-                JOptionPane.showMessageDialog(null, "La stringa inserita non è un numero.\nL'operazione è stata annullata.", "Jocasta-Nu: Errore", JOptionPane.ERROR_MESSAGE);
-            }
+        if (e.getSource() == crea) {
+            createArchive();
         }
     }
 }

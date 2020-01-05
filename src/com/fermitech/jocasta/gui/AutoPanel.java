@@ -25,4 +25,8 @@ public class AutoPanel extends JPanel {
     public String getPanel_name() {
         return panel_name;
     }
+
+    public void summonErrorPopup(String message){
+        JOptionPane.showMessageDialog(null, message, "Jocasta-Nu: Errore", JOptionPane.ERROR_MESSAGE);
+    }
 }
