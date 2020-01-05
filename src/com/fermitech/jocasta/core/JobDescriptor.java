@@ -1,15 +1,21 @@
 package com.fermitech.jocasta.core;
 
 import com.fermitech.jocasta.gui.FileInputOptions;
+import com.fermitech.jocasta.jobs.FixedNumberSplitJob;
 import com.fermitech.jocasta.jobs.Job;
 
-import java.util.Vector;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class JobDescriptor {
     private boolean crypt, compress, cut_size, cut_parts ,decompress, decrypt, fix;
     private String src_path, dst_path, password;
     private int division_value;
     private boolean error;
+    Queue<Job> queue;
 
     public JobDescriptor(FileInputOptions options, String src_path, String dst_path){
         this.crypt = options.getCrypt();
@@ -26,16 +32,64 @@ public class JobDescriptor {
         }
         this.src_path = src_path;
         this.dst_path = dst_path;
+        this.queue = new LinkedList<Job>();
+
     }
 
-    public Vector<Job> BuildJobs(){
-        Vector<Job> newJobs = new Vector<Job>();
-        return newJobs;
+    private void BuildOutJobs() throws FileNotFoundException{
+        if(!crypt && !compress){
+            if(cut_parts) {
+                queue.add(new FixedNumberSplitJob(this.src_path, this.dst_path, this.division_value));
+            }
+            else{
+                queue.add(null);
+            }
+        }
+        else {
+            if (crypt) {
+                queue.add(null);
+            }
+            if (compress) {
+                queue.add(null);
+            }
+            if (cut_parts) {
+                queue.add(new FixedNumberSplitJob(this.src_path, this.dst_path, this.division_value));
+            } else {
+                queue.add(null);
+            }
+        }
+    }
+
+    private void BuildInJobs() throws FileNotFoundException {
+        return;
+    }
+
+    public void BuildJobs() throws FileNotFoundException {
+       if(cut_size || cut_parts){
+           BuildOutJobs();
+       }
+       else{
+           BuildInJobs();
+       }
+    }
+
+    public void RunJobs() throws IOException {
+        Iterator iterator = this.queue.iterator();
+        while(iterator.hasNext()){
+            Job job = (Job) iterator.next();
+            job.execute();
+        }
+
+    }
+
+    public Queue<Job> getQueue() {
+        return queue;
     }
 
     public boolean getFlag(){
         return error;
     }
+
 
     @Override
     public String toString(){

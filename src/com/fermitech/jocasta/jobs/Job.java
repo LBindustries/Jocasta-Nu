@@ -8,7 +8,7 @@ public abstract class Job {
     protected boolean status;
     protected File file;
 
-    public Job(String source, String destination){
+    public Job(String source, String destination) throws FileNotFoundException {
         this.source = source;
         this.destination = destination;
         this.file = new File(source);
@@ -39,12 +39,12 @@ public abstract class Job {
         this.status = status;
     }
 
-    public void Execute() throws FileNotFoundException, IOException {
+    public void execute() throws FileNotFoundException, IOException {
 
     }
 
     @Override
     public String toString(){
-        return source + " " + destination;
+        return source + " " + destination+" ";
     }
 }

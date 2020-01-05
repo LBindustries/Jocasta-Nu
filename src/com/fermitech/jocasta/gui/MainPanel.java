@@ -8,7 +8,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Vector;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Queue;
 
 public class MainPanel extends AutoPanel implements ActionListener {
     JMenu menu;
@@ -43,19 +45,30 @@ public class MainPanel extends AutoPanel implements ActionListener {
         return cc1.getSelectedFile().getAbsolutePath();
     }
 
-    private void createArchive() {
+    private void createArchive() throws FileNotFoundException {
         FileInputOptions opzioni = new FileInputOptions("Opzioni");
-        JobDescriptor j = new JobDescriptor(opzioni, chooserGetFile(opzioni, "Seleziona un file", false), chooserGetFile(opzioni, "Seleziona la cartella di destinazione", true));
+        JobDescriptor j = new JobDescriptor(opzioni, chooserGetFile(opzioni, "Seleziona un file", false), chooserGetFile(null, "Seleziona la cartella di destinazione", true));
         if (j.getFlag()) {
             this.summonErrorPopup("La stringa inserita non è un numero.\nL'operazione è stata annullata.");
+            return;
         }
-
+        j.BuildJobs();
+        System.out.println(j);
+        try {
+            j.RunJobs();
+        } catch (IOException e) {
+            this.summonErrorPopup("Errore durante l'esecuzione del Job indicato.");
+        }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == crea) {
-            createArchive();
+            try {
+                createArchive();
+            } catch (FileNotFoundException ex) {
+                this.summonErrorPopup("File non trovato.\nChe gli archivi siano incompleti?");
+            }
         }
     }
 }
