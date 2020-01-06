@@ -38,7 +38,7 @@ public class FileInputOptions extends AutoPanel implements ActionListener {
         this.lpart = new JLabel("N° parti");
         this.ndimensione = new JTextField(5);
         this.ndimensione.setEnabled(false);
-        this.ldim = new JLabel("Dimensione in MB");
+        this.ldim = new JLabel("Dimensione in Kb");
         this.add(comprimi);
         this.add(cifra);
         this.add(parti);
