@@ -13,6 +13,7 @@ public class SizeSplitJob extends SplitJob {
 
     @Override
     public void execute() throws IOException{
+        super.execute();
         long parts = this.file.length()/(division_value); //Numero di parti da dividere data una certa dimensione in Kb
         long leftover = this.file.length()%(division_value); //Numero di Byte che avanzano
         int i;

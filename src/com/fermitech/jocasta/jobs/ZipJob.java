@@ -16,6 +16,7 @@ public class ZipJob extends InJob{
 
     @Override
     public void execute() throws IOException{
+        super.execute();
         ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(destination+"/"+file.getName()+".zip"));
         zip.setMethod(ZipOutputStream.DEFLATED);
         zip.setLevel(9);

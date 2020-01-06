@@ -11,7 +11,6 @@ public abstract class Job {
     public Job(String source, String destination) throws FileNotFoundException {
         this.source = source;
         this.destination = destination;
-        this.file = new File(source);
         this.status = false;
     }
 
@@ -40,7 +39,7 @@ public abstract class Job {
     }
 
     public void execute() throws FileNotFoundException, IOException {
-
+        this.file = new File(source);
     }
 
     @Override

@@ -12,7 +12,6 @@ public abstract class InJob extends Job {
 
     public InJob(String source, String destination) throws FileNotFoundException {
         super(source, destination);
-        this.stream = new FileInputStream(this.file);
     }
     public InJob(String source, String destination, FileInputStream stream) throws FileNotFoundException {
         super(source, destination);
@@ -41,6 +40,12 @@ public abstract class InJob extends Job {
         if (value!=-1) {
             outputStream.write(buffer);
         }
+    }
+
+    @Override
+    public void execute() throws IOException {
+        super.execute();
+        this.stream = new FileInputStream(this.file);
     }
 
     @Override

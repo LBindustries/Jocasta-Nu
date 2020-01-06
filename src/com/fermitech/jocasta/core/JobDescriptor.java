@@ -1,13 +1,12 @@
 package com.fermitech.jocasta.core;
 
 import com.fermitech.jocasta.gui.FileInputOptions;
-import com.fermitech.jocasta.jobs.FixedNumberSplitJob;
-import com.fermitech.jocasta.jobs.Job;
-import com.fermitech.jocasta.jobs.SizeSplitJob;
-import com.fermitech.jocasta.jobs.ZipJob;
+import com.fermitech.jocasta.jobs.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -39,26 +38,41 @@ public class JobDescriptor {
     }
 
     private void BuildOutJobs() throws FileNotFoundException{
+        String src, dst;
+        src = this.src_path;
+        dst = this.dst_path;
+        File tmp = new File(this.src_path);
         if(!crypt && !compress){
             if(cut_parts) {
-                queue.add(new FixedNumberSplitJob(this.src_path, this.dst_path, this.division_value));
+                queue.add(new FixedNumberSplitJob(src, dst, this.division_value));
             }
             else{
-                queue.add(new SizeSplitJob(this.src_path, this.dst_path, this.division_value));
+                queue.add(new SizeSplitJob(src, dst, this.division_value));
             }
         }
         else {
             if (crypt) {
-                queue.add(null);
+                try {
+                    queue.add(new CryptoJob(src, dst, this.password));
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+                src = dst+"/"+tmp.getName()+".cry";
             }
             if (compress) {
-                queue.add(new ZipJob(this.src_path, this.dst_path));
+                queue.add(new ZipJob(src, dst));
+                src = dst+"/"+tmp.getName();
+                if(crypt){
+                    src = src+".cry";
+                }
+                src = src+".zip";
             }
             if (cut_parts) {
-                queue.add(new FixedNumberSplitJob(this.src_path, this.dst_path, this.division_value));
+                queue.add(new FixedNumberSplitJob(src, dst, this.division_value));
             } else {
-                queue.add(new SizeSplitJob(this.src_path, this.dst_path, this.division_value));
+                queue.add(new SizeSplitJob(src, dst, this.division_value));
             }
+            System.out.println(src);
         }
     }
 
@@ -79,9 +93,10 @@ public class JobDescriptor {
         Iterator iterator = this.queue.iterator();
         while(iterator.hasNext()){
             Job job = (Job) iterator.next();
+            //System.out.println(job);
             job.execute();
         }
-
+        //TODO: Find a way to delete temp files after processing.
     }
 
     public Queue<Job> getQueue() {

@@ -14,6 +14,7 @@ public class FixedNumberSplitJob extends SplitJob {
 
     @Override
     public void execute() throws IOException {
+        super.execute();
         long chunk_size = this.file.length()/division_value; // Calcolo della dimensione di ogni file
         long leftover = this.file.length()%division_value; // Calcolo dei byte che ne rimangono fuori alla fine
         for(int i=1; i<=this.division_value; i++){ // Ciclo di divisione dei file di dimensione fissa
