@@ -3,13 +3,12 @@ package com.fermitech.jocasta.jobs;
 import java.io.*;
 
 public class SizeSplitJob extends SplitJob {
-    private static long max_size = 8*1024;
     public SizeSplitJob(String source, String destination, int division_value) throws FileNotFoundException {
-        super(source, destination, division_value*1000);
+        super(source, destination, division_value*1024);
     }
 
     public SizeSplitJob(String source, String destination, FileInputStream stream, int division_value) throws FileNotFoundException {
-        super(source, destination, stream, division_value*1000);
+        super(source, destination, stream, division_value*1024);
     }
 
     @Override
@@ -19,19 +18,7 @@ public class SizeSplitJob extends SplitJob {
         int i;
         for(i=1; i<=parts; i++){
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+"/"+file.getName()+".joca."+i));
-            if(division_value > max_size){
-                long n_reads = division_value/max_size;
-                long leftover_reads = division_value%max_size;
-                for(int j=0; j<n_reads; j++){
-                    writer(outputStream, max_size);
-                }
-                if(leftover_reads>0){
-                    writer(outputStream, leftover_reads);
-                }
-            }
-            else{
-                writer(outputStream, division_value);
-            }
+            super.bufferControl(division_value, outputStream);
             outputStream.close();
         }
         if(leftover>0){
@@ -40,14 +27,6 @@ public class SizeSplitJob extends SplitJob {
             outputStream.close();
         }
         stream.close();
-    }
-
-    public void writer(BufferedOutputStream outputStream, long size) throws IOException{
-        byte[] buffer = new byte[(int) size];
-        int value = this.stream.read(buffer);
-        if (value!=-1) {
-            outputStream.write(buffer);
-        }
     }
 
     @Override

@@ -56,7 +56,7 @@ public class JobDescriptor {
             if (cut_parts) {
                 queue.add(new FixedNumberSplitJob(this.src_path, this.dst_path, this.division_value));
             } else {
-                queue.add(null);
+                queue.add(new SizeSplitJob(this.src_path, this.dst_path, this.division_value));
             }
         }
     }
