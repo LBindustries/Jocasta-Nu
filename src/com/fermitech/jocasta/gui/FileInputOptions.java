@@ -80,7 +80,7 @@ public class FileInputOptions extends AutoPanel implements ActionListener {
     }
 
     public boolean getComp(){
-        return cifra.isSelected();
+        return comprimi.isSelected();
     }
 
     public boolean getPart(){

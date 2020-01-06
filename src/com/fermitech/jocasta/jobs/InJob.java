@@ -4,10 +4,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.zip.ZipOutputStream;
 
 public abstract class InJob extends Job {
     protected static long max_size = 8*1024;
     protected FileInputStream stream;
+
     public InJob(String source, String destination) throws FileNotFoundException {
         super(source, destination);
         this.stream = new FileInputStream(this.file);

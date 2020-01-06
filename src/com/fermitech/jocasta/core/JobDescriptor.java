@@ -4,6 +4,7 @@ import com.fermitech.jocasta.gui.FileInputOptions;
 import com.fermitech.jocasta.jobs.FixedNumberSplitJob;
 import com.fermitech.jocasta.jobs.Job;
 import com.fermitech.jocasta.jobs.SizeSplitJob;
+import com.fermitech.jocasta.jobs.ZipJob;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class JobDescriptor {
                 queue.add(null);
             }
             if (compress) {
-                queue.add(null);
+                queue.add(new ZipJob(this.src_path, this.dst_path));
             }
             if (cut_parts) {
                 queue.add(new FixedNumberSplitJob(this.src_path, this.dst_path, this.division_value));
