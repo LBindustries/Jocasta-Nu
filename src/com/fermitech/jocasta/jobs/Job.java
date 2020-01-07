@@ -43,8 +43,8 @@ public abstract class Job {
         this.file = new File(source);
     }
 
-    protected void bufferControl(long value, OutputStream outputStream) throws IOException {
-        if(value >= max_size){
+    protected void bufferControl(long value, OutputStream outputStream) throws IOException { //There might be something very wrong with this. Not everything gets transferred to disk.
+        if(value > max_size){
             long n_reads = value/max_size;
             long leftover_reads = value%max_size;
             for(int j=0; j<n_reads; j++){

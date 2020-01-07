@@ -20,13 +20,17 @@ public class FixedNumberSplitJob extends SplitJob {
         for(int i=1; i<=this.division_value; i++){ // Ciclo di divisione dei file di dimensione fissa
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+"/"+file.getName()+".joca."+i));
             super.bufferControl(chunk_size, outputStream);
+            if(leftover>0){ // Scrittura dei dati avanzati
+                writer(outputStream, leftover);
+                leftover=0;
+            }
             outputStream.close();
         }
-        if(leftover>0){ // Scrittura dei dati avanzati
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+"/"+file.getName()+".joca."+(division_value), true));
-            writer(outputStream, leftover);
-            outputStream.close();
-        }
+        //if(leftover>0){ // Scrittura dei dati avanzati
+        //    BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+"/"+file.getName()+".joca."+(division_value), true));
+        //    writer(outputStream, leftover);
+        //    outputStream.close();
+        //}
         stream.close();
     }
 
