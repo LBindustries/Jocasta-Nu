@@ -72,13 +72,13 @@ public class FixJob extends OutJob {
         super.execute();
         stream.close();
         File[] filearray = locateFiles();
-
         long leftover = total_size%filearray.length;
         long test = leftover;
+        int counter = 0;
         for (File current : filearray) {
             FileInputStream current_stream = new FileInputStream(current);
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + "/" + nextFileNameGenerator(), true));
-            bufferControl(file.length(), outputStream, current_stream);
+            bufferControl(current.length(), outputStream, current_stream);
             //if(leftover > 0){
             //    bufferControl(file.length(), outputStream, current_stream);
             //    writer(outputStream, leftover, current_stream);
@@ -90,6 +90,11 @@ public class FixJob extends OutJob {
             //}
             outputStream.close();
             current_stream.close();
+            if(counter==filearray.length && leftover>0){
+                bufferControl(file.length(), outputStream, current_stream);
+                writer(outputStream, leftover, current_stream);
+            }
+            counter++;
         }
     }
 
