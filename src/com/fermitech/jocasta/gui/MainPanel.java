@@ -40,7 +40,7 @@ public class MainPanel extends AutoPanel implements ActionListener {
         CustomChooser cc1 = new CustomChooser(options, title, only_folders);
         int returnvalue = cc1.showOpenDialog(null);
         if (returnvalue != JFileChooser.APPROVE_OPTION) {
-            return "error";
+            return "error"; //Todo: I dont think this really works
         }
         return cc1.getSelectedFile().getAbsolutePath();
     }
@@ -61,11 +61,31 @@ public class MainPanel extends AutoPanel implements ActionListener {
         }
     }
 
+    private void openArchive() throws FileNotFoundException {
+        String src = chooserGetFile(null, "Seleziona l'archivio", false);
+        String dst = chooserGetFile(null,"Seleziona la cartella di destinazione",true);
+        JobDescriptor j = new JobDescriptor(src, dst, "");
+        j.BuildJobs();
+        System.out.println(j);
+        try {
+            j.RunJobs();
+        } catch (IOException e) {
+            this.summonErrorPopup("Errore durante l'esecuzione del Job indicato.");
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == crea) {
             try {
                 createArchive();
+            } catch (FileNotFoundException ex) {
+                this.summonErrorPopup("File non trovato.\nChe gli archivi siano incompleti?");
+            }
+        }
+        else if(e.getSource() == apri){
+            try {
+                openArchive();
             } catch (FileNotFoundException ex) {
                 this.summonErrorPopup("File non trovato.\nChe gli archivi siano incompleti?");
             }

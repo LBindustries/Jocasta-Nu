@@ -7,6 +7,7 @@ public abstract class Job {
     protected String destination;
     protected boolean status;
     protected File file;
+    protected static long max_size = 8*1024;
 
     public Job(String source, String destination) throws FileNotFoundException {
         this.source = source;
@@ -40,6 +41,26 @@ public abstract class Job {
 
     public void execute() throws FileNotFoundException, IOException {
         this.file = new File(source);
+    }
+
+    protected void bufferControl(long value, OutputStream outputStream) throws IOException {
+        if(value >= max_size){
+            long n_reads = value/max_size;
+            long leftover_reads = value%max_size;
+            for(int j=0; j<n_reads; j++){
+                writer(outputStream, max_size);
+            }
+            if(leftover_reads>0){
+                writer(outputStream, leftover_reads);
+            }
+        }
+        else{
+            writer(outputStream, value);
+        }
+    }
+
+    protected void writer(OutputStream outputStream, long size) throws IOException {
+
     }
 
     @Override
