@@ -16,6 +16,7 @@ public class JobDescriptor {
     private String src_path, dst_path, password;
     private int division_value;
     private boolean error;
+    private int tot_jobs, curr_jobs;
     Queue<Job> queue;
 
     public JobDescriptor(FileInputOptions options, String src_path, String dst_path){
@@ -34,7 +35,8 @@ public class JobDescriptor {
         this.src_path = src_path;
         this.dst_path = dst_path;
         this.queue = new LinkedList<Job>();
-
+        tot_jobs = 0;
+        curr_jobs = 0;
     }
 
     private void BuildOutJobs() throws FileNotFoundException{
@@ -49,6 +51,7 @@ public class JobDescriptor {
             else{
                 queue.add(new SizeSplitJob(src, dst, this.division_value));
             }
+            tot_jobs++;
         }
         else {
             if (crypt) {
@@ -58,6 +61,7 @@ public class JobDescriptor {
                     e.printStackTrace();
                 }
                 src = dst+"/"+tmp.getName()+".cry";
+                tot_jobs++;
             }
             if (compress) {
                 queue.add(new ZipJob(src, dst));
@@ -66,12 +70,14 @@ public class JobDescriptor {
                     src = src+".cry";
                 }
                 src = src+".zip";
+                tot_jobs++;
             }
             if (cut_parts) {
                 queue.add(new FixedNumberSplitJob(src, dst, this.division_value));
             } else {
                 queue.add(new SizeSplitJob(src, dst, this.division_value));
             }
+            tot_jobs++;
             System.out.println(src);
         }
     }
@@ -91,12 +97,17 @@ public class JobDescriptor {
 
     public void RunJobs() throws IOException {
         Iterator iterator = this.queue.iterator();
+
         while(iterator.hasNext()){
             Job job = (Job) iterator.next();
-            //System.out.println(job);
+            System.out.println(job);
             job.execute();
+            if(curr_jobs>=1){
+                File file = new File(job.getSource());
+                file.delete();
+            }
+            curr_jobs++;
         }
-        //TODO: Find a way to delete temp files after processing.
     }
 
     public Queue<Job> getQueue() {

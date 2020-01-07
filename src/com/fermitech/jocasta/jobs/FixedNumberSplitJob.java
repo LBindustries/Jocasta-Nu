@@ -23,7 +23,7 @@ public class FixedNumberSplitJob extends SplitJob {
             outputStream.close();
         }
         if(leftover>0){ // Scrittura dei dati avanzati
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+"/"+file.getName()+".joca."+(division_value)));
+            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+"/"+file.getName()+".joca."+(division_value), true));
             writer(outputStream, leftover);
             outputStream.close();
         }
