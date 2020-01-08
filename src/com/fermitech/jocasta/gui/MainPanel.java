@@ -36,7 +36,7 @@ public class MainPanel extends AutoPanel implements ActionListener {
         frame.setVisible(true);
     }
 
-    private String chooserGetFile(FileInputOptions options, String title, boolean only_folders) {
+    private String chooserGetFile(AutoPanel options, String title, boolean only_folders) {
         CustomChooser cc1 = new CustomChooser(options, title, only_folders);
         int returnvalue = cc1.showOpenDialog(null);
         if (returnvalue != JFileChooser.APPROVE_OPTION) {
@@ -62,9 +62,10 @@ public class MainPanel extends AutoPanel implements ActionListener {
     }
 
     private void openArchive() throws FileNotFoundException {
-        String src = chooserGetFile(null, "Seleziona l'archivio", false);
+        FileExtractionOptions opzioni = new FileExtractionOptions("Opzioni");
+        String src = chooserGetFile(opzioni, "Seleziona l'archivio", false);
         String dst = chooserGetFile(null,"Seleziona la cartella di destinazione",true);
-        JobDescriptor j = new JobDescriptor(src, dst, "");
+        JobDescriptor j = new JobDescriptor(src, dst, opzioni.getPassword());
         j.BuildJobs();
         System.out.println(j);
         try {

@@ -18,6 +18,7 @@ public class JobDescriptor {
     private boolean error;
     private int tot_jobs, curr_jobs;
     Queue<Job> queue;
+    String[] ext = null;
 
     public JobDescriptor(FileInputOptions options, String src_path, String dst_path) {
         this.crypt = options.getCrypt();
@@ -40,7 +41,7 @@ public class JobDescriptor {
 
     public JobDescriptor(String src_path, String dst_path, String password) {
         File file = new File(src_path);
-        String[] ext = file.getName().split("\\.");
+        this.ext = file.getName().split("\\.");
         for (String tmp : ext) {
             if (tmp.equals("cry")) {
                 decrypt = true;
@@ -103,9 +104,11 @@ public class JobDescriptor {
         dst = this.dst_path;
         if (fix) {
             queue.add(new FixJob(src, dst));
+            src = nextFileNameGenerator("joca");
         }
         if(decrypt){
-            //queue.add(null);
+            queue.add(new DecryptJob(src, dst, password));
+            src = nextFileNameGenerator("cry");
         }
         if(decompress){
             //queue.add(null);
@@ -143,6 +146,20 @@ public class JobDescriptor {
         return error;
     }
 
+    protected String nextFileNameGenerator(String exte) {
+        String result = "";
+        for (String tmp : this.ext) {
+            if (tmp.equals(exte)) {
+                break;
+            }
+            if (result.equals("")) {
+                result = tmp;
+            } else {
+                result = result + "." + tmp;
+            }
+        }
+        return dst_path+"/"+result;
+    }
 
     @Override
     public String toString() {

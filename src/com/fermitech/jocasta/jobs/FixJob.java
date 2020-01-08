@@ -7,13 +7,11 @@ import java.util.Vector;
 
 public class FixJob extends OutJob {
     private Vector<File> files;
-    private String[] name_components;
     private long total_size;
 
     public FixJob(String source, String destination) throws FileNotFoundException {
-        super(source, destination);
+        super(source, destination, "joca");
         files = null;
-        name_components = null;
         total_size = 0;
     }
 
@@ -21,7 +19,6 @@ public class FixJob extends OutJob {
         Vector<File> correct = new Vector<File>();
         File folder = new File((file.getAbsoluteFile().getParent()));
         File[] all_files = folder.listFiles();
-        name_components = file.getName().split("\\.");
         for (File tmp : all_files) {
             String[] companion_components = tmp.getName().split("\\.");
             if (name_components[0].equals(companion_components[0]) && name_components.length == companion_components.length) {
@@ -45,20 +42,7 @@ public class FixJob extends OutJob {
         return result;
     }
 
-    private String nextFileNameGenerator() {
-        String result = "";
-        for (String tmp : name_components) {
-            if (tmp.equals("joca")) {
-                break;
-            }
-            if (result == "") {
-                result = tmp;
-            } else {
-                result = result + "." + tmp;
-            }
-        }
-        return result;
-    }
+
 
     private File[] sortFiles(){
         Object[] array = this.files.toArray();
@@ -68,7 +52,7 @@ public class FixJob extends OutJob {
     }
 
     @Override
-    public void execute() throws IOException { //Il problema è qui, da qualche parte. La divisione dei dati avviene correttamente, ma ci sono problemi nel momento in cui si tenta di riunirli.
+    public void execute() throws IOException {
         super.execute();
         stream.close();
         File[] filearray = locateFiles();
@@ -76,10 +60,10 @@ public class FixJob extends OutJob {
         long test = leftover;
         int counter = 0;
         for (File current : filearray) {
-            FileInputStream current_stream = new FileInputStream(current);
+            FileInputStream current_stream = new FileInputStream(current); //magari la metto dentro al suo posto nella struttura dati tanto per
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + "/" + nextFileNameGenerator(), true));
             bufferControl(current.length(), outputStream, current_stream);
-            //if(leftover > 0){
+            //if(leftover > 0){ utter trash that needs to be removed
             //    bufferControl(file.length(), outputStream, current_stream);
             //    writer(outputStream, leftover, current_stream);
             //    leftover = 0;

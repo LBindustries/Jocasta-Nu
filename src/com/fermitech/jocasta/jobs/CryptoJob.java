@@ -1,5 +1,7 @@
 package com.fermitech.jocasta.jobs;
 
+import com.fermitech.jocasta.core.Enigma;
+
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
@@ -23,29 +25,31 @@ public class CryptoJob extends InJob {
         this.password = password;
     }
 
-    private static final byte[] salt = {
-            (byte) 0x43, (byte) 0x76, (byte) 0x95, (byte) 0xc7,
-            (byte) 0x5b, (byte) 0xd7, (byte) 0x45, (byte) 0x17
-    };
-
-    private Cipher makeChipher() throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
-        PBEKeySpec keySpec = new PBEKeySpec(password.toCharArray());
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
-        SecretKey key = factory.generateSecret(keySpec);
-        Cipher c = Cipher.getInstance("PBEWithMD5AndDES");
-        PBEParameterSpec pbeParamSpec = new PBEParameterSpec(salt, 42);
-        c.init(Cipher.ENCRYPT_MODE, key, pbeParamSpec);
-        return c;
-    }
+    //private static final byte[] salt = {
+    //        (byte) 0x41, (byte) 0x42, (byte) 0x43, (byte) 0x44,
+    //        (byte) 0x45, (byte) 0x46, (byte) 0x47, (byte) 0x48
+    //};
+//
+    //private Cipher makeChipher() throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
+    //    PBEKeySpec keySpec = new PBEKeySpec(password.toCharArray());
+    //    SecretKeyFactory factory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
+    //    SecretKey key = factory.generateSecret(keySpec);
+    //    Cipher c = Cipher.getInstance("PBEWithMD5AndDES");
+    //    PBEParameterSpec pbeParamSpec = new PBEParameterSpec(salt, 42);
+    //    c.init(Cipher.ENCRYPT_MODE, key, pbeParamSpec);
+    //    return c;
+    //}
 
     @Override
     public void execute() throws IOException {
         super.execute();
-        try {
-            cipher = makeChipher();
-        } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | InvalidKeySpecException e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    cipher = makeChipher();
+        //} catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | InvalidKeySpecException e) {
+        //    e.printStackTrace();
+        //}
+        Enigma enigma = new Enigma(password, true);
+        this.cipher = enigma.getChipher();
         BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+"/"+file.getName()+".cry"));
         super.bufferControl(file.length(), outputStream);
         outputStream.close();
@@ -57,12 +61,14 @@ public class CryptoJob extends InJob {
         byte[] buffer = new byte[(int) size];
         int value = this.stream.read(buffer);
         if (value!=-1) {
-            try {
-                buffer = cipher.doFinal(buffer);
-            } catch (IllegalBlockSizeException | BadPaddingException e) {
-                e.printStackTrace();
-            }
-            outputStream.write(buffer);
+            //try {
+            //    buffer = cipher.doFinal(buffer);
+            //} catch (IllegalBlockSizeException | BadPaddingException e) {
+            //    e.printStackTrace();
+            //}
+            byte[] tmp = null;
+            tmp = cipher.update(buffer);
+            outputStream.write(tmp);
         }
     }
 

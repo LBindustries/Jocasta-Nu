@@ -4,8 +4,26 @@ import java.io.*;
 
 public class OutJob extends Job {
     protected FileInputStream stream;
-    public OutJob(String source, String destination) throws FileNotFoundException {
+    protected String ext;
+    protected String[] name_components;
+    public OutJob(String source, String destination, String ext) throws FileNotFoundException {
         super(source, destination);
+        this.ext = ext;
+    }
+
+    protected String nextFileNameGenerator() {
+        String result = "";
+        for (String tmp : name_components) {
+            if (tmp.equals(this.ext)) {
+                break;
+            }
+            if (result.equals("")) {
+                result = tmp;
+            } else {
+                result = result + "." + tmp;
+            }
+        }
+        return result;
     }
 
     @Override
@@ -20,6 +38,7 @@ public class OutJob extends Job {
     @Override
     public void execute() throws IOException {
         super.execute();
+        name_components = file.getName().split("\\.");
         this.stream = new FileInputStream(this.file);
     }
 
