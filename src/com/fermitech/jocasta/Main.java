@@ -13,6 +13,7 @@ public class Main {
         container.add(pannello);
         f.setVisible(true);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(300, 200);
+        f.setSize(1050, 550);
+        f.setResizable(false);
     }
 }

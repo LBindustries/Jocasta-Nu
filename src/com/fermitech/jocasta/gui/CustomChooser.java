@@ -1,7 +1,5 @@
 package com.fermitech.jocasta.gui;
 
-import javafx.stage.FileChooser;
-
 import javax.swing.*;
 import java.awt.*;
 

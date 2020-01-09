@@ -5,32 +5,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.ZipOutputStream;
-
+/**
+ * This is the InJob class, a specialized class for Jobs that create archives.
+ */
 public abstract class InJob extends Job {
-    protected FileInputStream stream;
-
+    /**
+     * This is the InJob class constructor.
+     *
+     * @param source      the absolute path to the source file, which may not exist yet.
+     * @param destination the absolute path to the destination file.
+     */
     public InJob(String source, String destination) throws FileNotFoundException {
         super(source, destination);
-    }
-
-    public InJob(String source, String destination, FileInputStream stream) throws FileNotFoundException {
-        super(source, destination);
-        this.stream = stream;
-    }
-
-    @Override
-    protected void writer(OutputStream outputStream, long size) throws IOException {
-        byte[] buffer = new byte[(int) size];
-        int value = this.stream.read(buffer);
-        if (value != -1) {
-            outputStream.write(buffer);
-        }
-    }
-
-    @Override
-    public void execute() throws IOException {
-        super.execute();
-        this.stream = new FileInputStream(this.file);
     }
 
     @Override

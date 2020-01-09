@@ -19,6 +19,7 @@ public class JobDescriptor {
     private int tot_jobs, curr_jobs;
     Queue<Job> queue;
     String[] ext = null;
+    String descrizione;
 
     public JobDescriptor(FileInputOptions options, String src_path, String dst_path) {
         this.crypt = options.getCrypt();
@@ -37,6 +38,7 @@ public class JobDescriptor {
         this.queue = new LinkedList<Job>();
         tot_jobs = 0;
         curr_jobs = 0;
+        descrizione = "";
     }
 
     public JobDescriptor(String src_path, String dst_path, String password) {
@@ -55,6 +57,7 @@ public class JobDescriptor {
         this.src_path=src_path;
         this.dst_path=dst_path;
         this.queue = new LinkedList<Job>();
+        descrizione = "";
     }
 
     private void BuildOutJobs() throws FileNotFoundException {
@@ -62,11 +65,14 @@ public class JobDescriptor {
         src = this.src_path;
         dst = this.dst_path;
         File tmp = new File(this.src_path);
+        descrizione+="Crea ";
         if (!crypt && !compress) {
             if (cut_parts) {
                 queue.add(new FixedNumberSplitJob(src, dst, this.division_value));
+                descrizione+="Dividi in "+division_value+" file";
             } else {
                 queue.add(new SizeSplitJob(src, dst, this.division_value));
+                descrizione+="Dividi in file da "+division_value+" kb";
             }
             tot_jobs++;
         } else {
@@ -78,6 +84,7 @@ public class JobDescriptor {
                 }
                 src = dst + "/" + tmp.getName() + ".cry";
                 tot_jobs++;
+                descrizione+=" Cifra";
             }
             if (compress) {
                 queue.add(new ZipJob(src, dst));
@@ -87,11 +94,14 @@ public class JobDescriptor {
                 }
                 src = src + ".zip";
                 tot_jobs++;
+                descrizione+=" Comprimi ";
             }
             if (cut_parts) {
                 queue.add(new FixedNumberSplitJob(src, dst, this.division_value));
+                descrizione+="Dividi in "+division_value+" file";
             } else {
                 queue.add(new SizeSplitJob(src, dst, this.division_value));
+                descrizione+="Dividi in file da "+division_value+" kb";
             }
             tot_jobs++;
             System.out.println(src);
@@ -102,17 +112,21 @@ public class JobDescriptor {
         String src, dst;
         src = this.src_path;
         dst = this.dst_path;
+        descrizione += "Apri ";
         if (fix) {
             queue.add(new FixJob(src, dst));
             src = nextFileNameGenerator("joca");
+            descrizione += "Ricompatta ";
         }
         if(decompress){
-            queue.add(new UnZipJob(src, dst, "zip"));
+            queue.add(new UnZipJob(src, dst));
             src = nextFileNameGenerator("zip");
+            descrizione += "Decomprimi ";
         }
         if(decrypt){
             queue.add(new DecryptJob(src, dst, password));
             src = nextFileNameGenerator("cry");
+            descrizione += "Decifra ";
         }
     }
 
@@ -160,6 +174,54 @@ public class JobDescriptor {
             }
         }
         return dst_path+"/"+result;
+    }
+
+    public String getDst_path() {
+        return dst_path;
+    }
+
+    public String getSrc_path() {
+        return src_path;
+    }
+
+    public int getDivision_value() {
+        return division_value;
+    }
+
+    public boolean isCrypt() {
+        return crypt;
+    }
+
+    public boolean isCompress() {
+        return compress;
+    }
+
+    public boolean isCut_parts() {
+        return cut_parts;
+    }
+
+    public boolean isCut_size() {
+        return cut_size;
+    }
+
+    public boolean isDecompress() {
+        return decompress;
+    }
+
+    public boolean isDecrypt() {
+        return decrypt;
+    }
+
+    public boolean isError() {
+        return error;
+    }
+
+    public boolean isFix() {
+        return fix;
+    }
+
+    public String getDescrizione() {
+        return descrizione;
     }
 
     @Override

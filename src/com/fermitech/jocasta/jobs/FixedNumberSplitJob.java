@@ -1,17 +1,25 @@
 package com.fermitech.jocasta.jobs;
 
 import java.io.*;
-
+/**
+ * This is the FixedNumberSplitJob class, a specialized class for Jobs that create splitted archives, divided in n files.
+ */
 public class FixedNumberSplitJob extends SplitJob {
-    private static long max_size = 8*1024;
+    /**
+     * This is the FixedNumberSplitJob class constructor.
+     *
+     * @param source      the absolute path to the source file, which may not exist yet.
+     * @param destination the absolute path to the destination file.
+     * @param division_value the number of requested parts.
+     */
     public FixedNumberSplitJob(String source, String destination, int division_value) throws FileNotFoundException {
         super(source, destination, division_value);
     }
-
-    public FixedNumberSplitJob(String source, String destination, FileInputStream stream,int division_value) throws FileNotFoundException {
-        super(source, destination, stream,division_value);
-    }
-
+    /**
+     * This is the FixedNumberSplitJob specialized execute method.
+     * It uses the inherited execute() to initialize file and stream, and then calculates the size of each file and the
+     * leftover bytes. Then it uses a for cycle to create n files of specified size, using the bufferControl method.
+     */
     @Override
     public void execute() throws IOException {
         super.execute();
@@ -26,11 +34,6 @@ public class FixedNumberSplitJob extends SplitJob {
             }
             outputStream.close();
         }
-        //if(leftover>0){ // Scrittura dei dati avanzati
-        //    BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+"/"+file.getName()+".joca."+(division_value), true));
-        //    writer(outputStream, leftover);
-        //    outputStream.close();
-        //}
         stream.close();
     }
 

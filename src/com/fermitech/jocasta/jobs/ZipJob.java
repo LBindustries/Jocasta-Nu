@@ -3,19 +3,22 @@ package com.fermitech.jocasta.jobs;
 import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
+/**
+ * This is the ZipJob class, a specialized class for Jobs that create compressed archives.
+ */
 public class ZipJob extends InJob{
-
+    /**
+     * This is the ZipJob class constructor.
+     *
+     * @param source      the absolute path to the source file, which may not exist yet.
+     * @param destination the absolute path to the destination file.
+     */
     public ZipJob(String source, String destination) throws FileNotFoundException {
         super(source, destination);
     }
 
-    public ZipJob(String source, String destination, FileInputStream stream) throws FileNotFoundException {
-        super(source, destination, stream);
-    }
-
     @Override
-    public void execute() throws IOException{
+    public void execute() throws IOException{ //Todo: look into another way to compress files.
         super.execute();
         ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(destination+"/"+file.getName()+".zip"));
         zip.setMethod(ZipOutputStream.DEFLATED);
