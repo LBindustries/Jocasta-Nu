@@ -124,16 +124,19 @@ public class JobDescriptor {
             queue.add(new FixJob(src, dst));
             src = nextFileNameGenerator("joca");
             descrizione += "Ricompatta ";
+            tot_jobs++;
         }
         if(decompress){
             queue.add(new UnZipJob(src, dst));
             src = nextFileNameGenerator("zip");
             descrizione += "Decomprimi ";
+            tot_jobs++;
         }
         if(decrypt){
             queue.add(new DecryptJob(src, dst, password));
             src = nextFileNameGenerator("cry");
             descrizione += "Decifra ";
+            tot_jobs++;
         }
     }
 
@@ -253,6 +256,10 @@ public class JobDescriptor {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public int getTot_jobs() {
+        return tot_jobs;
     }
 
     @Override

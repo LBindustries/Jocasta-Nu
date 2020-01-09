@@ -84,7 +84,7 @@ public class MainPanel extends AutoPanel implements ActionListener {
 
     private void addToTable(JobDescriptor j){
         DefaultTableModel model = (DefaultTableModel) tabella.getModel();
-        model.addRow(new Object[]{j.getId(),j.getSrc_path(), j.getDst_path(), j.getDescrizione(), ""});
+        model.addRow(new Object[]{j.getId(),j.getSrc_path(), j.getDst_path(), j.getDescrizione(), j.getCurr_jobs()+"/"+j.getTot_jobs()});
     }
 
     private String chooserGetFile(AutoPanel options, String title, boolean only_folders) {
@@ -188,13 +188,13 @@ public class MainPanel extends AutoPanel implements ActionListener {
         Vector<JobThread> threads = new Vector<JobThread>();
         for(JobDescriptor j:elenco){
             if(j.isValid()){
-                threads.add(new JobThread(j));}
+                threads.add(new JobThread(j, this.tabella));}
         }
         for(JobThread t:threads){
-            t.run();
+            t.start();
         }
         for(int i=0; i<elenco.size();i++){
-            elenco.remove(i);
+            elenco.get(i).setValid(false);
         }
     }
 }
