@@ -17,19 +17,32 @@ import java.util.Queue;
 import java.util.Vector;
 
 public class MainPanel extends AutoPanel implements ActionListener {
-    JMenu menu;
-    JMenuBar mb;
-    JMenuItem crea, apri, about;
-    JTable tabella;
-    ArrayList<JobDescriptor> elenco = new ArrayList<JobDescriptor>();
-    JButton start;
+    private JMenu menu;
+    private JMenuBar mb;
+    private JMenuItem crea, apri, about;
+    private JTable tabella;
+    private ArrayList<JobDescriptor> elenco = new ArrayList<JobDescriptor>();
+    private JButton start, delete, mod;
+    private JLabel id_label;
+    private JTextField id;
+    private Vector<JobThread> threads;
 
     public MainPanel(JFrame frame) {
         super("Pannello Principale");
         menuBarSetup(frame);
         tableSetup();
-        start = new JButton("Esegui tutti i job");
+        id_label = new JLabel("Id del Job:");
+        id = new JTextField(4);
+        delete = new JButton("Elimina il Job");
+        delete.addActionListener(this);
+        mod = new JButton("Modifica il Job");
+        mod.addActionListener(this);
+        start = new JButton("Esegui tutti i Job");
         start.addActionListener(this);
+        this.add(id_label);
+        this.add(id);
+        this.add(delete);
+        this.add(mod);
         this.add(start);
     }
 
@@ -53,6 +66,7 @@ public class MainPanel extends AutoPanel implements ActionListener {
 
     private void tableSetup(){
         DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("ID");
         model.addColumn("Bersaglio");
         model.addColumn("Dest.");
         model.addColumn("Job richiesti");
@@ -70,21 +84,21 @@ public class MainPanel extends AutoPanel implements ActionListener {
 
     private void addToTable(JobDescriptor j){
         DefaultTableModel model = (DefaultTableModel) tabella.getModel();
-        model.addRow(new Object[]{j.getSrc_path(), j.getDst_path(), j.getDescrizione(), ""});
+        model.addRow(new Object[]{j.getId(),j.getSrc_path(), j.getDst_path(), j.getDescrizione(), ""});
     }
 
     private String chooserGetFile(AutoPanel options, String title, boolean only_folders) {
         CustomChooser cc1 = new CustomChooser(options, title, only_folders);
         int returnvalue = cc1.showOpenDialog(null);
         if (returnvalue != JFileChooser.APPROVE_OPTION) {
-            return "error"; //Todo: I dont think this really works
+            return "error";
         }
         return cc1.getSelectedFile().getAbsolutePath();
     }
 
     private void createArchive() throws FileNotFoundException {
         FileInputOptions opzioni = new FileInputOptions("Opzioni");
-        JobDescriptor j = new JobDescriptor(opzioni, chooserGetFile(opzioni, "Seleziona un file", false), chooserGetFile(null, "Seleziona la cartella di destinazione", true));
+        JobDescriptor j = new JobDescriptor(opzioni, chooserGetFile(opzioni, "Seleziona un file", false), chooserGetFile(null, "Seleziona la cartella di destinazione", true), elenco.size());
         if (j.getFlag()) {
             this.summonErrorPopup("La stringa inserita non è un numero.\nL'operazione è stata annullata.");
             return;
@@ -102,7 +116,7 @@ public class MainPanel extends AutoPanel implements ActionListener {
         FileExtractionOptions opzioni = new FileExtractionOptions("Opzioni");
         String src = chooserGetFile(opzioni, "Seleziona l'archivio", false);
         String dst = chooserGetFile(null,"Seleziona la cartella di destinazione",true);
-        JobDescriptor j = new JobDescriptor(src, dst, opzioni.getPassword());
+        JobDescriptor j = new JobDescriptor(src, dst, opzioni.getPassword(), elenco.size());
         if(j.getSrc_path().equals("error")||j.getDst_path().equals("error")){
             return;
         }
@@ -131,15 +145,56 @@ public class MainPanel extends AutoPanel implements ActionListener {
         else if(e.getSource() == start && elenco.size()>0){
             runAllJobs();
         }
+        else if(e.getSource() == delete && elenco.size()>0){
+            try{
+                deleteJob(Integer.parseInt(id.getText()));
+            } catch (Exception ex) {
+                this.summonErrorPopup("Il numero inserito non è valido.");
+            }
+        }
+        else if(e.getSource() == mod && elenco.size()>0){
+            try{
+                modJob(Integer.parseInt(id.getText()));
+            } catch (Exception ex) {
+                this.summonErrorPopup("Il numero inserito non è valido.");
+            }
+        }
+    }
+
+    private void deleteJob(int index){
+        JobDescriptor j = elenco.get(index);
+        j.setValid(false);
+        elenco.set(index, j);
+        DefaultTableModel model = (DefaultTableModel) tabella.getModel();
+        model.setValueAt("Cancellato", index, 4);
+    }
+
+    private void modJob(int index){
+        boolean open = elenco.get(index).isFix();
+        deleteJob(index);
+        try {
+            if (open) {
+                openArchive();
+            }
+            else{
+                createArchive();
+            }
+        } catch (FileNotFoundException e) {
+            this.summonErrorPopup("File non trovato.");
+        }
     }
 
     private void runAllJobs(){
         Vector<JobThread> threads = new Vector<JobThread>();
         for(JobDescriptor j:elenco){
-            threads.add(new JobThread(j));
+            if(j.isValid()){
+                threads.add(new JobThread(j));}
         }
         for(JobThread t:threads){
             t.run();
+        }
+        for(int i=0; i<elenco.size();i++){
+            elenco.remove(i);
         }
     }
 }

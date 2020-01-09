@@ -2,6 +2,7 @@ package com.fermitech.jocasta.core;
 
 import com.fermitech.jocasta.gui.FileInputOptions;
 import com.fermitech.jocasta.jobs.*;
+import com.fermitech.jocasta.core.Coda;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,11 +18,13 @@ public class JobDescriptor {
     private int division_value;
     private boolean error;
     private int tot_jobs, curr_jobs;
-    Queue<Job> queue;
+    Coda queue;
     String[] ext = null;
     String descrizione;
+    private int id;
+    private boolean valid;
 
-    public JobDescriptor(FileInputOptions options, String src_path, String dst_path) {
+    public JobDescriptor(FileInputOptions options, String src_path, String dst_path, int id) {
         this.crypt = options.getCrypt();
         this.compress = options.getComp();
         this.cut_size = options.getDim();
@@ -35,13 +38,15 @@ public class JobDescriptor {
         }
         this.src_path = src_path;
         this.dst_path = dst_path;
-        this.queue = new LinkedList<Job>();
-        tot_jobs = 0;
-        curr_jobs = 0;
-        descrizione = "";
+        this.queue = new Coda();
+        this.tot_jobs = 0;
+        this.curr_jobs = 0;
+        this.descrizione = "";
+        this.id = id;
+        valid = true;
     }
 
-    public JobDescriptor(String src_path, String dst_path, String password) {
+    public JobDescriptor(String src_path, String dst_path, String password, int id) {
         File file = new File(src_path);
         this.ext = file.getName().split("\\.");
         for (String tmp : ext) {
@@ -56,8 +61,10 @@ public class JobDescriptor {
         this.password = password;
         this.src_path=src_path;
         this.dst_path=dst_path;
-        this.queue = new LinkedList<Job>();
-        descrizione = "";
+        this.queue = new Coda();
+        this.descrizione = "";
+        this.id = id;
+        valid = true;
     }
 
     private void BuildOutJobs() throws FileNotFoundException {
@@ -138,22 +145,26 @@ public class JobDescriptor {
         }
     }
 
-    public void RunJobs() throws IOException {
-        Iterator iterator = this.queue.iterator();
+    //public void RunJobs() throws IOException {
+    //    Iterator iterator = this.queue.iterator();
+//
+    //    while (iterator.hasNext()) {
+    //        Job job = (Job) iterator.next();
+    //        //System.out.println(job);
+    //        job.execute();
+    //        if (curr_jobs >= 1) {
+    //            File file = new File(job.getSource());
+    //            file.delete();
+    //        }
+    //        curr_jobs++;
+    //    }
+    //}
 
-        while (iterator.hasNext()) {
-            Job job = (Job) iterator.next();
-            //System.out.println(job);
-            job.execute();
-            if (curr_jobs >= 1) {
-                File file = new File(job.getSource());
-                file.delete();
-            }
-            curr_jobs++;
-        }
+    public Job RunNextJob(){
+        return queue.pop();
     }
 
-    public Queue<Job> getQueue() {
+    public Coda getQueue() {
         return queue;
     }
 
@@ -222,6 +233,26 @@ public class JobDescriptor {
 
     public String getDescrizione() {
         return descrizione;
+    }
+
+    public int getCurr_jobs() {
+        return curr_jobs;
+    }
+
+    public void setCurr_jobs(int curr_jobs) {
+        this.curr_jobs = curr_jobs;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 
     @Override
