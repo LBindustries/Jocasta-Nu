@@ -106,12 +106,13 @@ public class JobDescriptor {
             queue.add(new FixJob(src, dst));
             src = nextFileNameGenerator("joca");
         }
+        if(decompress){
+            queue.add(new UnZipJob(src, dst, "zip"));
+            src = nextFileNameGenerator("zip");
+        }
         if(decrypt){
             queue.add(new DecryptJob(src, dst, password));
             src = nextFileNameGenerator("cry");
-        }
-        if(decompress){
-            //queue.add(null);
         }
     }
 
