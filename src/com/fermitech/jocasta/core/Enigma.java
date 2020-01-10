@@ -11,6 +11,8 @@ import java.security.spec.KeySpec;
 
 public class Enigma {
     private Cipher chipher;
+    private byte[] salt1;
+    private byte[] salt2;
     public Enigma(String password, boolean crypt) {
         try {
             this.chipher = makeChipher(password, crypt);
@@ -18,27 +20,31 @@ public class Enigma {
             e.printStackTrace();
         }
     }
-    // Salt1 and Salt2 are here just for a brief moment.
-    private static final byte[] salt1 = {
-            (byte) 0x43, (byte) 0x76, (byte) 0x95, (byte) 0xc7,
-            (byte) 0x5b, (byte) 0xd7, (byte) 0x45, (byte) 0x17
-    };
 
-    private static final byte[] salt2 = {
-            (byte) 0x43, (byte) 0x76, (byte) 0x95, (byte) 0xc7,
-            (byte) 0x5b, (byte) 0xd7, (byte) 0x45, (byte) 0x17,
-            (byte) 0x43, (byte) 0x76, (byte) 0x95, (byte) 0xc7,
-            (byte) 0x5b, (byte) 0xd7, (byte) 0x45, (byte) 0x17
-    };
-
-    protected byte[] generateSalt(int size) {
-        byte[] salt = new byte[size];
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(salt);
-        return salt;
+    protected void generateSalt(String password) {
+        byte[] p_bytes = password.getBytes();
+        salt1 = new byte[8];
+        for (int i = 0; i < p_bytes.length; i++) {
+            salt1[i] = p_bytes[i];
+        }
+        if (p_bytes.length < 8) {
+            for (int i = p_bytes.length; i < 8; i++) {
+                salt1[i] = (byte) 0x00;
+            }
+        }
+        salt2 = new byte[16];
+        for (int i = 0; i < p_bytes.length; i++) {
+            salt2[i] = p_bytes[i];
+        }
+        if (p_bytes.length < 16) {
+            for (int i = p_bytes.length; i < 16; i++) {
+                salt2[i] = (byte) 0x00;
+            }
+        }
     }
 
     private Cipher makeChipher(String password, boolean crypt) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
+        generateSalt(password);
         KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt1, 65535, 256);
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
         SecretKey key = factory.generateSecret(keySpec);

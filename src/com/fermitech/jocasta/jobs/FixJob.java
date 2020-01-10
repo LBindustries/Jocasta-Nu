@@ -62,56 +62,34 @@ public class FixJob extends OutJob {
         return result;
     }
 
-
-    private File[] sortFiles() {
-        Object[] array = this.files.toArray();
-        File[] tmp = Arrays.copyOf(array, array.length, File[].class);
-        Arrays.sort(tmp);
-        return tmp;
-    }
+    /**
+     * This is the CryptoJob specialized execute method.
+     * It uses the inherited execute() to initialize file and stream. The stream gets closed, and the files are
+     * localized using the locateFiles method.
+     * Inside the for cycle, a new FileInputStream gets open and put inside the stream variable. After the
+     * BufferOutputStream initialization, control is given to bufferControl, and then clean-up operations start:
+     * outputStream gets closed, stream gets closed.
+     */
 
     @Override
-    public void execute() throws IOException { //Todo: refactor
+    public void execute() throws IOException {
         super.execute();
         stream.close();
         File[] filearray = locateFiles();
-        long leftover = total_size % filearray.length;
-        long test = leftover;
-        int counter = 0;
+        //long leftover = total_size % filearray.length;
+        //long test = leftover;
+        //int counter = 0;
         for (File current : filearray) {
-            FileInputStream current_stream = new FileInputStream(current); //magari la metto dentro al suo posto nella struttura dati tanto per. Toglierebbe il bisogno di riscrivere buffercontrol.
+            this.stream = new FileInputStream(current);
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + "/" + nextFileNameGenerator(), true));
-            bufferControl(current.length(), outputStream, current_stream);
+            bufferControl(current.length(), outputStream);
+            //if (counter == filearray.length && leftover > 0) {
+            //    bufferControl(file.length(), outputStream);
+            //    writer(outputStream, leftover);
+            //}
             outputStream.close();
-            current_stream.close();
-            if (counter == filearray.length && leftover > 0) {
-                bufferControl(file.length(), outputStream, current_stream);
-                writer(outputStream, leftover, current_stream);
-            }
-            counter++;
-        }
-    }
-
-    protected void bufferControl(long value, OutputStream outputStream, FileInputStream file) throws IOException {
-        if (value > max_size) {
-            long n_reads = value / max_size;
-            long leftover_reads = value % max_size;
-            for (int j = 0; j < n_reads; j++) {
-                writer(outputStream, max_size, file);
-            }
-            if (leftover_reads > 0) {
-                writer(outputStream, leftover_reads, file);
-            }
-        } else {
-            writer(outputStream, value, file);
-        }
-    }
-
-    protected void writer(OutputStream outputStream, long size, FileInputStream file) throws IOException {
-        byte[] buffer = new byte[(int) size];
-        int value = file.read(buffer);
-        if (value != -1) {
-            outputStream.write(buffer);
+            stream.close();
+            //counter++;
         }
     }
 

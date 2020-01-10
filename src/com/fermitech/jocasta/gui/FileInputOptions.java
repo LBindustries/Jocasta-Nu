@@ -24,7 +24,7 @@ public class FileInputOptions extends AutoPanel implements ActionListener {
         this.cifra.addActionListener(this);
         this.parti = new JRadioButton("Dividi in n° parti");
         this.parti.addActionListener(this);
-        this.dimensione = new JRadioButton("Dividi in n° MB");
+        this.dimensione = new JRadioButton("Dividi in n° kb");
         this.dimensione.addActionListener(this);
         this.split = new ButtonGroup();
         this.parti.setSelected(true);

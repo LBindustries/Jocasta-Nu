@@ -84,11 +84,11 @@ public class MainPanel extends AutoPanel implements ActionListener {
 
     private void addToTable(JobDescriptor j){
         DefaultTableModel model = (DefaultTableModel) tabella.getModel();
-        model.addRow(new Object[]{j.getId(),j.getSrc_path(), j.getDst_path(), j.getDescrizione(), j.getCurr_jobs()+"/"+j.getTot_jobs()});
+        model.addRow(new Object[]{j.getId(),j.getSrc_path(), j.getDst_path(), j.getDescrizione(), "Pianificato"});
     }
 
     private String chooserGetFile(AutoPanel options, String title, boolean only_folders) {
-        CustomChooser cc1 = new CustomChooser(options, title, only_folders);
+        CustomChooser cc1 = new CustomChooser(options, title, only_folders, false);
         int returnvalue = cc1.showOpenDialog(null);
         if (returnvalue != JFileChooser.APPROVE_OPTION) {
             return "error";
@@ -96,20 +96,41 @@ public class MainPanel extends AutoPanel implements ActionListener {
         return cc1.getSelectedFile().getAbsolutePath();
     }
 
+    private String[] chooserGetMultipleFiles(AutoPanel options, String title, boolean only_folders){
+        CustomChooser cc1 = new CustomChooser(options, title, only_folders, true);
+        int returnvalue = cc1.showOpenDialog(null);
+        if (returnvalue != JFileChooser.APPROVE_OPTION) {
+            return null;
+        }
+        File[] files = cc1.getSelectedFiles();
+        String[] result = new String[files.length];
+        for(int i=0; i<files.length; i++){
+            result[i] = files[i].getAbsolutePath();
+        }
+        return result;
+    }
+
     private void createArchive() throws FileNotFoundException {
         FileInputOptions opzioni = new FileInputOptions("Opzioni");
-        JobDescriptor j = new JobDescriptor(opzioni, chooserGetFile(opzioni, "Seleziona un file", false), chooserGetFile(null, "Seleziona la cartella di destinazione", true), elenco.size());
-        if (j.getFlag()) {
-            this.summonErrorPopup("La stringa inserita non è un numero.\nL'operazione è stata annullata.");
+        String[] files = chooserGetMultipleFiles(opzioni, "Seleziona i file", false);
+        String dst = chooserGetFile(null, "Seleziona la cartella di destinazione", true);
+        if(files==null){
             return;
         }
-        if(j.getSrc_path().equals("error")||j.getDst_path().equals("error")){
-            return;
+        for(String source:files) {
+            JobDescriptor j = new JobDescriptor(opzioni, source, dst, elenco.size());
+            if (j.getFlag()) {
+                this.summonErrorPopup("La stringa inserita non è un numero.\nL'operazione è stata annullata.");
+                return;
+            }
+            if (j.getSrc_path().equals("error") || j.getDst_path().equals("error")) {
+                return;
+            }
+            j.BuildJobs();
+            System.out.println(j);
+            elenco.add(j);
+            addToTable(j);
         }
-        j.BuildJobs();
-        System.out.println(j);
-        elenco.add(j);
-        addToTable(j);
     }
 
     private void openArchive() throws FileNotFoundException {
@@ -163,6 +184,9 @@ public class MainPanel extends AutoPanel implements ActionListener {
 
     private void deleteJob(int index){
         JobDescriptor j = elenco.get(index);
+        if(!j.isValid()){
+            return;
+        }
         j.setValid(false);
         elenco.set(index, j);
         DefaultTableModel model = (DefaultTableModel) tabella.getModel();
@@ -171,6 +195,9 @@ public class MainPanel extends AutoPanel implements ActionListener {
 
     private void modJob(int index){
         boolean open = elenco.get(index).isFix();
+        if(!elenco.get(index).isValid()){
+            return;
+        }
         deleteJob(index);
         try {
             if (open) {

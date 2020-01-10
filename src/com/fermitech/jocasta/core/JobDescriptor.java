@@ -148,21 +148,6 @@ public class JobDescriptor {
         }
     }
 
-    //public void RunJobs() throws IOException {
-    //    Iterator iterator = this.queue.iterator();
-//
-    //    while (iterator.hasNext()) {
-    //        Job job = (Job) iterator.next();
-    //        //System.out.println(job);
-    //        job.execute();
-    //        if (curr_jobs >= 1) {
-    //            File file = new File(job.getSource());
-    //            file.delete();
-    //        }
-    //        curr_jobs++;
-    //    }
-    //}
-
     public Job RunNextJob(){
         return queue.pop();
     }

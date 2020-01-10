@@ -18,7 +18,7 @@ public class ZipJob extends InJob{
     }
 
     @Override
-    public void execute() throws IOException{ //Todo: look into another way to compress files.
+    public void execute() throws IOException{
         super.execute();
         ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(destination+"/"+file.getName()+".zip"));
         zip.setMethod(ZipOutputStream.DEFLATED);
@@ -26,6 +26,17 @@ public class ZipJob extends InJob{
         zip.putNextEntry(new ZipEntry(file.getName()));
         bufferControl(file.length(), zip);
         zip.closeEntry();
+        //ZipEntry entry = new ZipEntry(file.getName());
+        //entry.setSize(max_size);
+        //zip.putNextEntry(entry);
+        //int value = 0;
+        //while (value != -1){
+        //    byte[] buffer = new byte [(int)max_size];
+        //    value = stream.read(buffer);
+        //    zip.write(buffer);
+        //}
+        //zip.closeEntry();
+        zip.finish();
         zip.close();
         stream.close();
     }

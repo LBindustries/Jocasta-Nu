@@ -24,6 +24,8 @@ public class JobThread extends Thread {
         try {
             for (Job job : job_list.getQueue().getList()) {
                 System.out.println(job);
+                DefaultTableModel model = (DefaultTableModel) tabella.getModel();
+                model.setValueAt("In esecuzione", job_list.getId(), 4);
                 job.execute();
                 progress = job_list.getCurr_jobs();
                 if (progress >= 1) {
@@ -31,12 +33,10 @@ public class JobThread extends Thread {
                     file.delete();
                 }
                 job_list.setCurr_jobs(progress+1);
-                DefaultTableModel model = (DefaultTableModel) tabella.getModel();
-                model.setValueAt(progress+"/"+job_list.getTot_jobs(), job_list.getId(), 4);
             }
         } catch (IOException e) {
             AutoPanel a = new AutoPanel("Error");
-            a.summonErrorPopup("Qualcosa è andato storto durante l'elaborazione del job.");
+            a.summonErrorPopup("Qualcosa è andato storto durante l'elaborazione del job "+job_list.getId()+".");
         }
         DefaultTableModel model = (DefaultTableModel) tabella.getModel();
         model.setValueAt("Completato", job_list.getId(), 4);
