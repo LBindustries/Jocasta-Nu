@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.ZipOutputStream;
+
 /**
  * This is the InJob class, a specialized class for Jobs that create archives.
  */

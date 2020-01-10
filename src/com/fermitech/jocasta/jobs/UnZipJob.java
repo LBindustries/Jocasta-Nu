@@ -20,7 +20,7 @@ public class UnZipJob extends OutJob {
         super(source, destination, "zip");
     }
     /**
-     * This is the DecryptJob specialized execute method.
+     * This is the UnZipJob specialized execute method.
      * It uses the inherited execute() to initialize file and stream, and then creates a ZipInputStream. As long as
      * there are entries, it creates a buffer which then gets filled with data form the ZipInputStream and then written
      * on the destination file.

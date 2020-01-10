@@ -1,6 +1,7 @@
 package com.fermitech.jocasta.jobs;
 
 import java.io.*;
+
 /**
  * This is the FixedNumberSplitJob class, a specialized class for Jobs that create splitted archives, divided in n files.
  */

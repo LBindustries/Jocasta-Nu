@@ -5,7 +5,7 @@ import java.io.*;
 /**
  * This is the InJob class, a specialized class for Jobs that opens archives.
  */
-public class OutJob extends Job {
+public abstract class OutJob extends Job {
     protected String ext;
     protected String[] name_components;
 
@@ -14,12 +14,13 @@ public class OutJob extends Job {
      *
      * @param source      the absolute path to the source file, which may not exist yet.
      * @param destination the absolute path to the destination file.
-     * @param ext the extension of the file for this job
+     * @param ext         the extension of the file for this job
      */
     public OutJob(String source, String destination, String ext) throws FileNotFoundException {
         super(source, destination);
         this.ext = ext;
     }
+
     /**
      * This is the nextFileNameGenerator method. It's used to evaluate the name of the file after processing.
      * It gradually builds a string containing the filename, and stops as soon as it finds the current job's extension.

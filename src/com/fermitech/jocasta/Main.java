@@ -3,9 +3,14 @@ import com.fermitech.jocasta.gui.*;
 
 import javax.swing.*;
 import java.awt.*;
-
+/**
+ * @author Lorenzo Balugani
+ * @version 1.0
+ */
 public class Main {
-
+    /**
+     * This is the runner. It creates the frame, and loads up the panel.
+     */
     public static void main(String[] args) {
         JFrame f = new JFrame("Jocasta-Nu archive manager");
         Container container = f.getContentPane();

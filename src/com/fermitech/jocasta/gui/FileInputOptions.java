@@ -6,6 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
+/**
+ * This is the FileInputOptions class, used to provide the user an iterface from which he can select the jobs needed on
+ * a certain file.
+ */
 public class FileInputOptions extends AutoPanel implements ActionListener {
 
     private JCheckBox comprimi, cifra;
@@ -14,10 +18,15 @@ public class FileInputOptions extends AutoPanel implements ActionListener {
     private JTextField password, nparti, ndimensione;
     private JLabel lpass, lpart, ldim;
 
-
+    /**
+     * This is the FileInputOptions constructor.
+     * It initializes the ui.
+     *
+     * @param panel_name the name of the panel.
+     */
     public FileInputOptions(String panel_name) {
         super(panel_name);
-        GridLayout lm = new GridLayout(11,1);
+        GridLayout lm = new GridLayout(11, 1);
         this.setLayout(lm);
         this.comprimi = new JCheckBox("Comprimi");
         this.cifra = new JCheckBox("Cifra");
@@ -49,53 +58,87 @@ public class FileInputOptions extends AutoPanel implements ActionListener {
         this.add(nparti);
         this.add(ldim);
         this.add(ndimensione);
-
     }
 
-    public void printpass(){
-        System.out.println(this.password.getText());
-    }
-
+    /**
+     * This is the FileInputOptions actionPerformed method.
+     * It reacts to changes to the ui, and enables certain types of jobs accordingly to the user input.
+     *
+     * @param e the event.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==cifra){
+        if (e.getSource() == cifra) {
             password.setEnabled(cifra.isSelected());
-        }
-        else if (e.getSource()==parti){
+        } else if (e.getSource() == parti) {
             nparti.setEnabled(parti.isSelected());
             ndimensione.setEnabled(false);
-        }
-        else if (e.getSource()==dimensione){
+        } else if (e.getSource() == dimensione) {
             ndimensione.setEnabled(dimensione.isSelected());
             nparti.setEnabled(false);
         }
     }
 
+    /**
+     * This is the FileInputOptions getPassword method.
+     * It returns the contents of password.
+     *
+     * @return the password.
+     */
     public String getPassword() {
         return password.getText();
     }
 
-    public boolean getCrypt(){
+    /**
+     * This is the FileInputOptions getCrypt method.
+     * It returns the boolean inside cifra.
+     *
+     * @return the boolean cifra.
+     */
+    public boolean getCrypt() {
         return cifra.isSelected();
     }
 
-    public boolean getComp(){
+    /**
+     * This is the FileInputOptions getComp method.
+     * It returns the boolean inside comprimi.
+     *
+     * @return the boolean comprimi.
+     */
+    public boolean getComp() {
         return comprimi.isSelected();
     }
 
-    public boolean getPart(){
+    /**
+     * This is the FileInputOptions getParti method.
+     * It returns the boolean inside parti.
+     *
+     * @return the boolean parti.
+     */
+    public boolean getPart() {
         return parti.isSelected();
     }
 
-    public boolean getDim(){
+    /**
+     * This is the FileInputOptions getDim method.
+     * It returns the boolean inside dimensione.
+     *
+     * @return the boolean dimensione.
+     */
+    public boolean getDim() {
         return dimensione.isSelected();
     }
 
-    public String get_value(){
-        if(dimensione.isSelected()){
+    /**
+     * This is the FileInputOptions getValue method.
+     * It returns, accordingly with the user's choice, the desired size or desired number of files.
+     *
+     * @return the division value.
+     */
+    public String get_value() {
+        if (dimensione.isSelected()) {
             return ndimensione.getText();
-        }
-        else{
+        } else {
             return nparti.getText();
         }
     }
