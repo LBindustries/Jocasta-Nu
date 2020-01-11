@@ -53,6 +53,7 @@ public class MainPanel extends AutoPanel implements ActionListener {
         this.add(delete);
         this.add(mod);
         this.add(start);
+        elenco = new ArrayList<JobDescriptor>();
     }
 
     /**
@@ -244,6 +245,9 @@ public class MainPanel extends AutoPanel implements ActionListener {
             } catch (Exception ex) {
                 this.summonErrorPopup("Il numero inserito non è valido.");
             }
+        }
+        else if (e.getSource()==about){
+            JOptionPane.showMessageDialog(null, "Jocasta-Nu è un programma scritto da Lorenzo Balugani per l'esame di Programmazione a Oggetti dell'università UNIMORE.\nIl nome del programma è una citazione al personaggio dell'archivista di \"L'attacco dei Cloni\", della serie Star Wars, il cui nome è appunto Jocasta-Nu.");
         }
     }
 

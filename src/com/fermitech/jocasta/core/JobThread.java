@@ -37,11 +37,17 @@ public class JobThread extends Thread {
     @Override
     public void run() {
         try {
-            DefaultTableModel model = (DefaultTableModel) tabella.getModel();
-            model.setValueAt("In esecuzione", job_list.getId(), 4);
+            if (this.tabella != null) {
+                DefaultTableModel model = (DefaultTableModel) tabella.getModel();
+                model.setValueAt("In esecuzione", job_list.getId(), 4);
+            }
             for (Job job : job_list.getQueue().getList()) {
                 System.out.println(job);
-                model.setValueAt("In esecuzione " + (job_list.getCurr_jobs() + 1) + "/" + job_list.getTot_jobs(), job_list.getId(), 4);
+                if (this.tabella != null) {
+                    DefaultTableModel model = (DefaultTableModel) tabella.getModel();
+                    model.setValueAt("In esecuzione " + (job_list.getCurr_jobs() + 1) + "/" + job_list.getTot_jobs(), job_list.getId(), 4);
+                }
+                System.out.println("Job "+job_list.getId()+" Progresso: " + (job_list.getCurr_jobs() + 1) + "/" + job_list.getTot_jobs());
                 job.execute();
                 progress = job_list.getCurr_jobs();
                 if (progress >= 1) {
@@ -51,11 +57,17 @@ public class JobThread extends Thread {
                 job_list.setCurr_jobs(progress + 1);
             }
         } catch (IOException e) {
+            if (this.tabella != null) {
             AutoPanel a = new AutoPanel("Error");
-            a.summonErrorPopup("Qualcosa è andato storto durante l'elaborazione del job " + job_list.getId() + ".");
+            a.summonErrorPopup("Qualcosa è andato storto durante l'elaborazione del job " + job_list.getId() + ".");}
+            else{
+                System.out.println("Qualcosa è andato storto durante l'elaborazione del job "+ job_list.getId() + ".");
+            }
         }
-        DefaultTableModel model = (DefaultTableModel) tabella.getModel();
-        model.setValueAt("Completato", job_list.getId(), 4);
+        if (this.tabella != null) {
+            DefaultTableModel model = (DefaultTableModel) tabella.getModel();
+            model.setValueAt("Completato", job_list.getId(), 4);}
+        System.out.println("Job "+job_list.getId()+" Completato!");
     }
 
 }

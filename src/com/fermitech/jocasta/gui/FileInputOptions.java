@@ -142,4 +142,63 @@ public class FileInputOptions extends AutoPanel implements ActionListener {
             return nparti.getText();
         }
     }
+
+    /**
+     * This is the FileInputOptions setCifra method.
+     * It sets the condition of cifra.
+     *
+     * @param set the desired value.
+     */
+    public void setCifra(boolean set) {
+        this.cifra.setSelected(set);
+    }
+    /**
+     * This is the FileInputOptions setPassword method.
+     * It sets the condition of password.
+     *
+     * @param set the desired value.
+     */
+    public void setPassword(String set) {
+        this.password.setText(set);
+    }
+    /**
+     * This is the FileInputOptions setComprimi method.
+     * It sets the condition of comprimi.
+     *
+     * @param set the desired value.
+     */
+    public void setComprimi(boolean set) {
+        this.comprimi.setSelected(set);
+    }
+    /**
+     * This is the FileInputOptions setParti method.
+     * It sets the condition of parti.
+     *
+     * @param set the desired value.
+     */
+    public void setParti(boolean set) {
+        this.parti.setSelected(set);
+    }
+    /**
+     * This is the FileInputOptions setDimensione method.
+     * It sets the condition of dimensione.
+     *
+     * @param set the desired value.
+     */
+    public void setDimensione(boolean set) {
+        this.dimensione.setSelected(set);
+    }
+    /**
+     * This is the FileInputOptions setValue method.
+     * It sets the condition of the selected division method JTextField.
+     *
+     * @param set the desired value.
+     */
+    public void set_value(String set) {
+        if (dimensione.isSelected()) {
+            ndimensione.setText(set);
+        } else {
+            nparti.setText(set);
+        }
+    }
 }
