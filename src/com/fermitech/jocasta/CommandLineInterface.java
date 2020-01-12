@@ -14,14 +14,14 @@ import java.util.Vector;
  * a GUI. It's a bit of a hack, but it works just fine.
  */
 public class CommandLineInterface {
-    private ArrayList<JobDescriptor> elenco;
+    private Vector<JobDescriptor> elenco;
     private Vector<JobThread> threads;
     /**
      * This is the CommandLineInterface class constructor.
      * It initializes the Jobs ArrayList and the threads Vector.
      */
     public CommandLineInterface() {
-        this.elenco = new ArrayList<JobDescriptor>();
+        this.elenco = new Vector<JobDescriptor>();
         this.threads = new Vector<JobThread>();
     }
     /**

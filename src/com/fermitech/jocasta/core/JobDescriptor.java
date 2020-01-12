@@ -410,6 +410,16 @@ public class JobDescriptor {
         return tot_jobs;
     }
 
+    /**
+     * This is the isQueueEmpty method of the JobDescriptor class.
+     * It returns true if the queue is empty.
+     *
+     * @return true if the queue is empty.
+     */
+    public boolean isQueueEmpty() {
+        return queue.isEmpty();
+    }
+
     @Override
     public String toString() {
         return "Cr: " + this.crypt + " Co: " + this.compress + " Cp: " + this.cut_parts + " Cs: " + this.cut_size + " Pw: " + this.password + " Va: " + this.division_value + "\nIn: " + this.src_path + " Ou: " + this.dst_path;

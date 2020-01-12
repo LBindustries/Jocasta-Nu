@@ -1,6 +1,8 @@
 package com.fermitech.jocasta.jobs;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 /**
@@ -58,7 +60,7 @@ public abstract class Job {
      * @param value the size of the whole file.
      * @param outputStream the OutputStream that will write the new file onto disk.
      */
-    protected void bufferControl(long value, OutputStream outputStream) throws IOException { //There might be something very wrong with this. Not everything gets transferred to disk.
+    protected void bufferControl(long value, OutputStream outputStream) throws IOException {
         if (value > max_size) {
             long n_reads = value / max_size;
             long leftover_reads = value % max_size;
@@ -84,6 +86,14 @@ public abstract class Job {
         int value = this.stream.read(buffer);
         if (value != -1) {
             outputStream.write(buffer);
+        }
+    }
+
+    protected void delete(String path){
+        try {
+            Files.deleteIfExists(Paths.get(path));
+        } catch (IOException e) {
+
         }
     }
 

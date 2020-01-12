@@ -29,25 +29,37 @@ public class Coda {
 
     /**
      * This is the peek method of Coda.
-     * It returns the last element of the list.
+     * It returns the first element of the list.
      *
-     * @return the last element of the list, the one in top of the queue.
+     * @return the first element of the list, the one in top of the queue.
      */
     public Job peek() {
-        Job j = list.get(list.size());
+        Job j = list.get(0);
         return j;
     }
 
     /**
      * This is the pop method of Coda.
-     * It returns the last element of the list, and deletes it from list.
+     * It returns the first element of the list, and deletes it from list.
      *
-     * @return the last element of the list, the one in top of the queue.
+     * @return the first element of the list, the one in top of the queue.
      */
     public Job pop() {
-        Job j = list.get(list.size());
-        list.remove(list.size());
+        Job j = list.get(0);
+        list.remove(0);
         return j;
+    }
+    /**
+     * This is the isEmpty method of Coda.
+     * If empty, it returns true.
+     *
+     * @return if true, the queue is empty.
+     */
+    public boolean isEmpty(){
+        if(list.size()==0){
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -37,7 +37,7 @@ public class DecryptJob extends OutJob {
         super.execute();
         Enigma enigma = new Enigma(password, false);
         this.cipher = enigma.getChipher();
-        BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + "/" + nextFileNameGenerator()));
+        BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + file.separator + nextFileNameGenerator()));
         super.bufferControl(file.length(), outputStream);
         outputStream.close();
         stream.close();

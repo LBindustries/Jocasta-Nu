@@ -24,7 +24,7 @@ public class MainPanel extends AutoPanel implements ActionListener {
     private JMenuBar mb;
     private JMenuItem crea, apri, about;
     private JTable tabella;
-    private ArrayList<JobDescriptor> elenco = new ArrayList<JobDescriptor>();
+    private Vector<JobDescriptor> elenco = new Vector<JobDescriptor>();
     private JButton start, delete, mod;
     private JLabel id_label;
     private JTextField id;
@@ -53,7 +53,7 @@ public class MainPanel extends AutoPanel implements ActionListener {
         this.add(delete);
         this.add(mod);
         this.add(start);
-        elenco = new ArrayList<JobDescriptor>();
+        elenco = new Vector<JobDescriptor>();
     }
 
     /**

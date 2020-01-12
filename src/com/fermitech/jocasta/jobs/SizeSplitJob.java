@@ -31,12 +31,12 @@ public class SizeSplitJob extends SplitJob {
         long leftover = this.file.length() % (division_value); //Numero di Byte che avanzano
         int i;
         for (i = 1; i <= parts; i++) {
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + "/" + file.getName() + ".joca." + i));
+            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + file.separator + file.getName() + ".joca." + i));
             super.bufferControl(division_value, outputStream);
             outputStream.close();
         }
         if (leftover > 0) {
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + "/" + file.getName() + ".joca." + (i)));
+            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + file.separator + file.getName() + ".joca." + (i)));
             writer(outputStream, leftover);
             outputStream.close();
         }

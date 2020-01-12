@@ -27,7 +27,7 @@ public class FixedNumberSplitJob extends SplitJob {
         long chunk_size = this.file.length()/division_value; // Calcolo della dimensione di ogni file
         long leftover = this.file.length()%division_value; // Calcolo dei byte che ne rimangono fuori alla fine
         for(int i=1; i<=this.division_value; i++){ // Ciclo di divisione dei file di dimensione fissa
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+"/"+file.getName()+".joca."+i));
+            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+file.separator+file.getName()+".joca."+i));
             super.bufferControl(chunk_size, outputStream);
             if(leftover>0){ // Scrittura dei dati avanzati
                 writer(outputStream, leftover);

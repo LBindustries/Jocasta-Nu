@@ -75,7 +75,7 @@ public class Enigma {
      * @param crypt    the mode: if true, it crypts, else it decrypts.
      * @return the cipher
      */
-    private Cipher makeChipher(String password, boolean crypt) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
+    protected Cipher makeChipher(String password, boolean crypt) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
         generateSalt(password);
         KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt1, 65535, 256);
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");

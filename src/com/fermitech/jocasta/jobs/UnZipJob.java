@@ -32,7 +32,7 @@ public class UnZipJob extends OutJob {
         ZipEntry entry;
         while ((entry = zip.getNextEntry()) != null) {
             byte[] buffer = new byte[(int) max_size];
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + "/" + nextFileNameGenerator()), (int) max_size);
+            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + file.separator + nextFileNameGenerator()), (int) max_size);
             int size;
             while ((size = zip.read(buffer, 0, buffer.length)) != -1) {
                 outputStream.write(buffer, 0, size);

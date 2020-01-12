@@ -79,9 +79,10 @@ public class FixJob extends OutJob {
         //long leftover = total_size % filearray.length;
         //long test = leftover;
         //int counter = 0;
+        delete(destination + file.separator + nextFileNameGenerator());
         for (File current : filearray) {
             this.stream = new FileInputStream(current);
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + "/" + nextFileNameGenerator(), true));
+            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination + file.separator + nextFileNameGenerator(), true));
             bufferControl(current.length(), outputStream);
             //if (counter == filearray.length && leftover > 0) {
             //    bufferControl(file.length(), outputStream);

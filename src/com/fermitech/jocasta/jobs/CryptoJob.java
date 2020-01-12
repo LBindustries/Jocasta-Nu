@@ -35,7 +35,7 @@ public class CryptoJob extends InJob {
         super.execute();
         Enigma enigma = new Enigma(password, true);
         this.cipher = enigma.getChipher();
-        BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+"/"+file.getName()+".cry"));
+        BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination+file.separator+file.getName()+".cry"));
         super.bufferControl(file.length(), outputStream);
         outputStream.close();
         stream.close();

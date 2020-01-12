@@ -37,17 +37,12 @@ public class JobThread extends Thread {
     @Override
     public void run() {
         try {
-            if (this.tabella != null) {
-                DefaultTableModel model = (DefaultTableModel) tabella.getModel();
-                model.setValueAt("In esecuzione", job_list.getId(), 4);
-            }
-            for (Job job : job_list.getQueue().getList()) {
+            editTable("In esecuzione");
+            while(!job_list.isQueueEmpty()) {
+                Job job = job_list.RunNextJob();
                 System.out.println(job);
-                if (this.tabella != null) {
-                    DefaultTableModel model = (DefaultTableModel) tabella.getModel();
-                    model.setValueAt("In esecuzione " + (job_list.getCurr_jobs() + 1) + "/" + job_list.getTot_jobs(), job_list.getId(), 4);
-                }
-                System.out.println("Job "+job_list.getId()+" Progresso: " + (job_list.getCurr_jobs() + 1) + "/" + job_list.getTot_jobs());
+                editTable("In esecuzione " + (job_list.getCurr_jobs() + 1) + "/" + job_list.getTot_jobs());
+                System.out.println("Job " + job_list.getId() + " Progresso: " + (job_list.getCurr_jobs() + 1) + "/" + job_list.getTot_jobs());
                 job.execute();
                 progress = job_list.getCurr_jobs();
                 if (progress >= 1) {
@@ -58,16 +53,27 @@ public class JobThread extends Thread {
             }
         } catch (IOException e) {
             if (this.tabella != null) {
-            AutoPanel a = new AutoPanel("Error");
-            a.summonErrorPopup("Qualcosa è andato storto durante l'elaborazione del job " + job_list.getId() + ".");}
-            else{
-                System.out.println("Qualcosa è andato storto durante l'elaborazione del job "+ job_list.getId() + ".");
+                AutoPanel a = new AutoPanel("Error");
+                a.summonErrorPopup("Qualcosa è andato storto durante l'elaborazione del job " + job_list.getId() + ".");
+            } else {
+                System.out.println("Qualcosa è andato storto durante l'elaborazione del job " + job_list.getId() + ".");
             }
         }
+        editTable("Completato");
+        System.out.println("Job " + job_list.getId() + " Completato!");
+    }
+
+    /**
+     * This is the JobThread editTable method.
+     * It edits the column of the main table that shows the progress on the file.
+     *
+     * @param stringa the message.
+     */
+    private synchronized void editTable(String stringa) {
         if (this.tabella != null) {
             DefaultTableModel model = (DefaultTableModel) tabella.getModel();
-            model.setValueAt("Completato", job_list.getId(), 4);}
-        System.out.println("Job "+job_list.getId()+" Completato!");
+            model.setValueAt(stringa, job_list.getId(), 4);
+        }
     }
 
 }
